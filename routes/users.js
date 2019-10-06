@@ -12,8 +12,7 @@ router.get('/:id', function(req, res, next) {
   let id = req.params.id;
   let user = users.find(u => u.id == id);
   if (!user) {
-    res.status(404);
-    res.end();
+    res.status(404).end();
   }
   else {
     res.json(user);
