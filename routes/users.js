@@ -11,7 +11,13 @@ router.get('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   let id = req.params.id;
   let user = users.find(u => u.id == id);
-  res.json(user);
+  if (!user) {
+    res.status(404);
+    res.end();
+  }
+  else {
+    res.json(user);
+  }
 });
 
 module.exports = router;
