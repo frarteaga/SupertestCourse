@@ -9,8 +9,8 @@ router.get('/', function(req, res, next) {
 
 /* GET a single user by id */
 router.get('/:id', function(req, res, next) {
-  let id = req.params.id;
-  let user = users.find(u => u.id == id);
+  let id = parseInt(req.params.id);
+  let user = users.find(u => u.id === id);
   if (!user) {
     res.status(404).end();
   }
