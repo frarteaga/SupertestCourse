@@ -12,7 +12,9 @@ router.get('/:id', function(req, res, next) {
   let id = parseInt(req.params.id);
   let user = users.find(u => u.id === id);
   if (!user) {
-    res.status(404).end();
+    res
+      .status(404)
+      .json({ errorMsg: `No user with id of ${id} was found`});
   }
   else {
     res.json(user);
