@@ -40,6 +40,7 @@ router.put('/:id', function(req, res, next) {
   }
 });
 
+// create a new user
 router.post('/', function(req, res, next) {
   let maxId = Math.max(...users.map(u => u.id));
   let newId = maxId + 1;
@@ -49,8 +50,18 @@ router.post('/', function(req, res, next) {
     email: req.body.email,
     department: req.body.department
   }
-  users.push(user);
-  res.json({ user });
+  if (!user.name || !user.email) {
+    res
+      .status(400)
+      .json({
+        errorMsg: "Invalid user"
+      })
+      .end();
+  }
+  else{
+    users.push(user);
+    res.json({ user });
+  }
 });
 
 module.exports = router;
