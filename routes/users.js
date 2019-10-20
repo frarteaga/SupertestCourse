@@ -40,4 +40,17 @@ router.put('/:id', function(req, res, next) {
   }
 });
 
+router.post('/', function(req, res, next) {
+  let maxId = Math.max(...users.map(u => u.id));
+  let newId = maxId + 1;
+  let user = {
+    id: newId,
+    name: req.body.name,
+    email: req.body.email,
+    department: req.body.department
+  }
+  users.push(user);
+  res.json({ user });
+});
+
 module.exports = router;
