@@ -21,4 +21,23 @@ router.get('/:id', function(req, res, next) {
   }
 });
 
+/* PUT a single user by id */
+router.put('/:id', function(req, res, next) {
+  let id = parseInt(req.params.id);
+  let user = users.find(u => u.id === id);
+  if (!user) {
+    res
+      .status(404)
+      .json({ errorMsg: `No user with id of ${id} was found`});
+  }
+  else {
+    user.name = req.body.name ? req.body.name : user.name;
+    user.email = req.body.email ? req.body.email : user.email;
+    user.department = req.body.department 
+        ? req.body.department 
+        : user.department;
+    res.json(user);
+  }
+});
+
 module.exports = router;
