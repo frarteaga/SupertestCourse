@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const users = require('../Users');
+const { check, validationResult } = require('express-validator');
 
 /* GET all users */
 router.get('/', function(req, res, next) {
@@ -41,7 +42,16 @@ router.put('/:id', function(req, res, next) {
 });
 
 // create a new user
-router.post('/', function(req, res, next) {
+router.post('/', [
+  check('name').isString().isLength({ min: 1 }),
+  check('email').isEmail()
+], function(req, res, next) {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   let maxId = Math.max(...users.map(u => u.id));
   let newId = maxId + 1;
   let user = {
@@ -50,18 +60,8 @@ router.post('/', function(req, res, next) {
     email: req.body.email,
     department: req.body.department
   }
-  if (!user.name || !user.email) {
-    res
-      .status(400)
-      .json({
-        errorMsg: "Invalid user"
-      })
-      .end();
-  }
-  else{
-    users.push(user);
-    res.json({ user });
-  }
+  users.push(user);
+  res.json({ user }); 
 });
 
 module.exports = router;
