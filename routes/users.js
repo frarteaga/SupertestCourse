@@ -36,7 +36,7 @@ router.put('/:id', function(req, res, next) {
     user.department = req.body.department 
         ? req.body.department 
         : user.department;
-    res.json(user);
+    res.json({ user });
   }
 });
 
