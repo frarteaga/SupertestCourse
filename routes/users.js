@@ -22,8 +22,25 @@ router.get('/:id', function(req, res, next) {
   }
 });
 
+const userValidationRules = [
+  check('name').isString().isLength({ min: 1 }),
+  check('email').optional().isEmail()
+];
+
+function checkForErrors(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ errors: errors.array() });
+    return true;
+  }
+  return false;
+}
+
 /* PUT a single user by id */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', userValidationRules, function(req, res, next) {
+  if (checkForErrors(req, res))
+    return;
+
   let id = parseInt(req.params.id);
   let user = users.find(u => u.id === id);
   if (!user) {
@@ -42,15 +59,9 @@ router.put('/:id', function(req, res, next) {
 });
 
 // create a new user
-router.post('/', [
-  check('name').isString().isLength({ min: 1 }),
-  check('email').isEmail()
-], function(req, res, next) {
-
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+router.post('/', userValidationRules , function(req, res, next) {
+  if (checkForErrors(req, res))
+    return;
 
   let maxId = Math.max(...users.map(u => u.id));
   let newId = maxId + 1;
