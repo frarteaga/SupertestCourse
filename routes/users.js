@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const users = require('../Users');
+let users = require('../Users');
 const { check, validationResult } = require('express-validator');
 
 /* GET all users */
@@ -73,6 +73,21 @@ router.post('/', userValidationRules , function(req, res, next) {
   }
   users.push(user);
   res.json({ user }); 
+});
+
+// remove a single user by id
+router.delete('/:id', function(req, res, next) {
+  let id = parseInt(req.params.id);
+  let user = users.find(u => u.id === id);
+  if (!user){
+    res
+      .status(404)
+      .json({ errorMsg: `No user with id of ${id} was found`});
+  }
+  else{
+    users = users.filter(u => u.id !== id);
+    res.json(users);
+  }
 });
 
 module.exports = router;
